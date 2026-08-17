@@ -1,0 +1,149 @@
+# DJI Mavic 2 PRO 的 ArduPilot 参数（四旋翼 X 架型，约 0.4 kg）。
+# 基于 Iris 参数调整，适配本项目较轻的机体和较大的螺旋桨推力系数。
+#
+# 常见参数名缩写：
+#   ATC = 姿态控制；ANG = 姿态角外环；RAT = 角速度内环
+#   PIT/RLL/YAW = 俯仰/横滚/偏航
+#   PSC = 位置控制；NE/D = 水平北东轴/竖直向下轴
+#   POS/VEL/ACC = 位置/速度/加速度
+#   MOT = 电机；THST = 推力；WP = 航点；FS = 故障保护
+# 注意：部分安全检查已为软件在环仿真关闭，不可直接用于真机。
+
+# FRAME_CLASS：机架类别；1 表示四旋翼。
+FRAME_CLASS,1.000000
+# FRAME_TYPE：机架布局；1 表示 X 型布局。
+FRAME_TYPE,1.000000
+
+# -------------------- 舵机/电机输出映射 --------------------
+# SERVOx_FUNCTION：第 x 路输出的功能编号；33～36 分别为 Motor1～Motor4。
+# 这里的顺序必须与 Webots 控制器中的电机顺序一致。
+SERVO1_FUNCTION,33.000000
+SERVO2_FUNCTION,34.000000
+SERVO3_FUNCTION,35.000000
+SERVO4_FUNCTION,36.000000
+
+# -------------------- 电机与推力模型 --------------------
+# MOT_THST_EXPO：油门到推力曲线的指数补偿；0 表示使用线性模型。
+MOT_THST_EXPO,0.000000
+# MOT_HOVER_LEARN：悬停油门学习方式；2 表示学习并保存悬停油门。
+MOT_HOVER_LEARN,2.000000
+# MOT_THST_HOVER：估计的悬停油门，范围 0～1；当前约为 32%。
+MOT_THST_HOVER,0.320000
+# MOT_SPIN_ARM：刚解锁、未起飞时的电机转速比例。
+MOT_SPIN_ARM,0.050000
+# MOT_SPIN_MIN：飞行状态下允许的最低电机转速比例。
+MOT_SPIN_MIN,0.100000
+# MOT_SPIN_MAX：飞行状态下允许的最高电机转速比例。
+MOT_SPIN_MAX,0.950000
+# MOT_PWM_TYPE：电调输出协议；0 为普通 PWM，仿真中用于接口兼容。
+MOT_PWM_TYPE,0.000000
+
+# -------------------- 姿态控制 --------------------
+# ANG_*_P：姿态角外环 P 增益，将角度误差转换为目标角速度。
+# RAT_*_P/I/D：角速度内环 PID 增益，将角速度误差转换为电机修正量。
+# ATC_ANG_PIT_P：俯仰角外环 P；增大后回正更快，但过大会振荡。
+ATC_ANG_PIT_P,1.500000
+# ATC_ANG_RLL_P：横滚角外环 P。
+ATC_ANG_RLL_P,1.500000
+# ATC_ANG_YAW_P：偏航角外环 P；当前为 0，即关闭偏航角纠正。
+ATC_ANG_YAW_P,0.000000
+# ATC_RAT_PIT_P：俯仰角速度内环比例增益。
+ATC_RAT_PIT_P,0.040000
+# ATC_RAT_RLL_P：横滚角速度内环比例增益。
+ATC_RAT_RLL_P,0.040000
+# ATC_RAT_YAW_P：偏航角速度内环比例增益；当前关闭。
+ATC_RAT_YAW_P,0.000000
+# ATC_RAT_PIT_I：俯仰角速度内环积分增益，用于消除持续偏差。
+ATC_RAT_PIT_I,0.020000
+# ATC_RAT_RLL_I：横滚角速度内环积分增益。
+ATC_RAT_RLL_I,0.020000
+# ATC_RAT_YAW_I：偏航角速度内环积分增益；当前关闭。
+ATC_RAT_YAW_I,0.000000
+# ATC_RAT_PIT_D：俯仰角速度内环微分增益，用于抑制快速振荡。
+ATC_RAT_PIT_D,0.001000
+# ATC_RAT_RLL_D：横滚角速度内环微分增益。
+ATC_RAT_RLL_D,0.001000
+# ATC_RAT_YAW_D：偏航角速度内环微分增益；当前关闭。
+ATC_RAT_YAW_D,0.000000
+
+# -------------------- 位置控制（Loiter/GUIDED） --------------------
+# PSC_NE_POS_P：水平位置外环 P，将水平位置误差转换为目标速度。
+PSC_NE_POS_P,1.000000
+# PSC_NE_VEL_P：水平速度环比例增益。
+PSC_NE_VEL_P,0.500000
+# PSC_NE_VEL_I：水平速度环积分增益，用于抵消持续漂移。
+PSC_NE_VEL_I,0.100000
+# PSC_NE_VEL_D：水平速度环微分增益，用于抑制速度突变。
+PSC_NE_VEL_D,0.050000
+# PSC_NE_VEL_IMAX：水平速度环积分项上限，防止积分累积过大。
+PSC_NE_VEL_IMAX,10.000000
+# PSC_ACC_XY_FILT：水平加速度控制低通滤波截止频率，单位 Hz。
+PSC_ACC_XY_FILT,5.000000
+# PSC_JERK_NE：水平目标加加速度（jerk）限制，影响指令平滑程度。
+PSC_JERK_NE,5.000000
+# PSC_JERK_D：竖直 Down 轴目标加加速度限制。
+PSC_JERK_D,5.000000
+# PSC_D_POS_P：竖直位置外环 P，将高度误差转换为目标竖直速度。
+PSC_D_POS_P,1.000000
+# PSC_D_VEL_P：竖直速度环比例增益，直接影响定高响应强度。
+PSC_D_VEL_P,5.000000
+# PSC_D_VEL_I：竖直速度环积分增益；当前为 0。
+PSC_D_VEL_I,0.000000
+# PSC_D_VEL_D：竖直速度环微分增益；当前为 0。
+PSC_D_VEL_D,0.000000
+# PSC_D_VEL_IMAX：竖直速度环积分项上限。
+PSC_D_VEL_IMAX,10.000000
+
+# -------------------- 起飞、航点与悬停 --------------------
+# WP_SPD：航点模式默认水平速度。
+WP_SPD,1.000000
+# WP_SPD_UP：最大上升速度；当前为 0.4 m/s。
+WP_SPD_UP,0.400000
+# WP_SPD_DN：最大下降速度；当前为 0.75 m/s。
+WP_SPD_DN,0.750000
+# WP_ACC：航点模式水平加速度限制。
+WP_ACC,0.300000
+# WP_ACC_Z：航点模式竖直加速度限制。
+WP_ACC_Z,0.300000
+# WP_JERK：航点模式加加速度限制；越小通常越平滑。
+WP_JERK,0.500000
+# WP_RADIUS_M：判定到达航点的水平半径；M 表示单位为米。
+WP_RADIUS_M,2.000000
+# LOIT_SPEED_MS：Loiter 最大水平速度；MS 表示单位为 m/s。
+LOIT_SPEED_MS,12.500000
+
+# -------------------- 状态估计、传感器与仿真安全设置 --------------------
+# AHRS_EKF_TYPE：AHRS 使用的估计器类型；10 为仿真使用的特殊估计方式。
+AHRS_EKF_TYPE,10.000000
+# EK3_ENABLE：是否启用 EKF3；0 表示关闭。
+EK3_ENABLE,0.000000
+# GPS_HDOP_GOOD：GPS HDOP 良好阈值；999 在仿真中放宽该检查。
+GPS_HDOP_GOOD,999.000000
+# EK3_GPS_CHECK：EKF3 的 GPS 质量检查位掩码；0 表示不启用检查。
+EK3_GPS_CHECK,0.000000
+# BATT_MONITOR：电池监测器类型；0 表示不启用电池监测。
+BATT_MONITOR,0.000000
+# SIM_BATT_VOLTAGE：仿真电池电压，单位 V；16.8 V 对应满电四串锂电池。
+SIM_BATT_VOLTAGE,16.800000
+# ARMING_CHECK：解锁前检查位掩码；0 表示关闭全部检查，仅限仿真。
+ARMING_CHECK,0.000000
+# DISARM_DELAY：着陆后自动上锁延迟；0 表示不设置延迟。
+DISARM_DELAY,0.000000
+# FS_EKF_ACTION：EKF 故障保护动作；0 表示不执行动作，仅限仿真。
+FS_EKF_ACTION,0.000000
+# FS_DR_ENABLE：航位推算（Dead Reckoning）故障保护；0 表示关闭。
+FS_DR_ENABLE,0.000000
+# FS_THR_ENABLE：油门/遥控失联故障保护；0 表示关闭。
+FS_THR_ENABLE,0.000000
+# FS_CRASH_CHECK：碰撞/坠机检查；0 表示关闭。
+FS_CRASH_CHECK,0.000000
+# FS_VIBE_ENABLE：振动故障保护；0 表示关闭。
+FS_VIBE_ENABLE,0.000000
+# SCHED_LOOP_RATE：ArduPilot 主调度循环频率，单位 Hz。
+SCHED_LOOP_RATE,180.000000
+# INS_GYR_CAL：启动时陀螺仪校准方式；0 表示不执行启动校准。
+INS_GYR_CAL,0.000000
+# ACRO_BAL_ROLL：Acro 模式横滚自动回正强度；0 表示关闭。
+ACRO_BAL_ROLL,0.000000
+# ACRO_BAL_PITCH：Acro 模式俯仰自动回正强度；0 表示关闭。
+ACRO_BAL_PITCH,0.000000

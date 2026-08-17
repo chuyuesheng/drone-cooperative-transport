@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.log
+*.tlog
+*.BIN
+*.bin
+.DS_Store
+Thumbs.db
+worlds/*.wbproj
+worlds/.*.wbproj
+worlds/.*.jpg
+
